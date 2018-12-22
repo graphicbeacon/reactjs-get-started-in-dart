@@ -1,29 +1,25 @@
 import 'dart:html';
 
-import 'package:js/js.dart';
-import 'package:js/js_util.dart';
-
-import 'app.dart';
+import 'interop/react.dart';
+import 'components/hello_message.dart';
+import 'components/ticker.dart';
 
 void main() {
-  var context = querySelector('#output');
   ReactDOM.render(
       React.createElement(
-        Greeting,
+        HelloMessage,
         makeJsObject({
-          "name": "John",
+          "name": "Taylor",
         }),
-        ['Your Dart app is running.'],
+        null,
       ),
-      context);
-}
+      querySelector('#output'));
 
-var Greeting = createReactClass({
-  "render": allowInteropCaptureThis(
-    (ReactClassInterface self) => React.createElement(
-          'h1',
-          null,
-          ['Hello, ${getProperty(self.props, 'name')}'],
-        ),
-  )
-});
+  ReactDOM.render(
+      React.createElement(
+        Ticker,
+        null,
+        null,
+      ),
+      querySelector('#output2'));
+}
