@@ -1,30 +1,31 @@
 import 'dart:async';
-import 'package:js/js_util.dart';
 
-import '../interop/react.dart';
+import 'package:react/react.dart';
 
-var Ticker = createReactClass(
-    getInitialState: () => makeJsObject({
-          "seconds": 0,
-        }),
-    componentDidMount: (ReactClassInterface self) {
-      self.interval = Timer.periodic(Duration(seconds: 1), (_) => self.tick());
-    },
-    componentWillUnmount: (ReactClassInterface self) {
-      self.interval.cancel();
-    },
-    render: (ReactClassInterface self) => React.createElement(
-          'div',
-          null,
-          ['Seconds ${getProperty(self.state, "seconds")}'],
-        ),
-    methodMap: {
-      "tick": (ReactClassInterface self) {
-        self.setState((dynamic state) {
-          var seconds = getProperty(state, "seconds") as int;
-          return makeJsObject({
-            "seconds": seconds + 1,
-          });
-        });
-      }
+class TickerComponent extends Component {
+  Timer interval;
+
+  tick() {
+    setState({
+      'seconds': state['seconds'] + 1,
     });
+  }
+
+  @override
+  Map getInitialState() => {'seconds': 0};
+
+  @override
+  componentDidMount() {
+    interval = Timer.periodic(Duration(seconds: 1), (_) => tick());
+  }
+
+  @override
+  componentWillUnmount() {
+    interval.cancel();
+  }
+
+  @override
+  render() => div({}, 'Seconds ${state["seconds"]}');
+}
+
+var Ticker = registerComponent(() => TickerComponent());
